@@ -1,14 +1,34 @@
 /// <reference types="cypress"/>
 
+
 describe('US-012-Funcionalidade: Cadastro de membros', () => {
+  beforeEach(() => {
+    cy.visit('/')
+  });
+
   it('Deve fazer o cadastro de campos obrigatórios', () => {
-    cy.visit('http://127.0.0.1:8080/')
-    cy.get('#signup-firstname').type('Alan')
-    cy.get('#signup-lastname').type('Zoka')
-    cy.get('#signup-email').type('alan@teste.com')
-    cy.get('#signup-phone').type('119993685741')
-    cy.get('#signup-password').type('Teste!123')
-    cy.get('#signup-button').click()
+    var email = `alan${Date.now()}@teste.com`
+    cy.preencherCadastro('Alan', 'Zoka', email, '11988684536', 'Teste@321')
     cy.get('#signup-response').should('contain' , 'Cadastro realizado com sucesso!')
+  })
+
+  it('Deve validar mensagem de erro com o campo nome inválido', () => {
+    cy.preencherCadastro('Alan11', 'Zoka', 'alan@teste.com', '11988684536', 'Teste@321')
+    cy.get('#signup-response').should('contain', 'Nome deve conter apenas caracteres alfabéticos, acentuados e espaços')
+  })
+
+  it('Deve validar mensagem de erro com o campo sobrenome inválido', () => {
+    cy.preencherCadastro('Alan', 'Zoka11', 'alan@teste.com', '11988684536', 'Teste@321')
+    cy.get('#signup-response').should('contain', 'Sobrenome deve conter apenas caracteres alfabéticos, acentuados e espaços')
+  })
+
+  it('Deve validar mensagem de erro com o campo email inválido', () => {
+    cy.preencherCadastro('Alan', 'Zoka', 'alanteste.com', '11988684536', 'Teste@321')
+    cy.get('#signup-response').should('contain', 'E-mail deve ser um email válido')
+  })
+
+  it.only('Deve validar mensagem de erro com o campo senha fraca', () => {
+    cy.preencherCadastro('Alan', 'Zoka', 'alan@teste.com', '11988684536', 'senha')
+    cy.get('#signup-response').should('contain', 'Senha deve ter pelo menos 8 caracteres, incluir uma letra maiúscula, um número e um caractere especial (!@#$&*)')
   })
 })

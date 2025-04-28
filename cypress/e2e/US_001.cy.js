@@ -6,6 +6,10 @@ describe('US-001-Funcionalidade: Busca de filmes', () => {
     cy.visit('/')
   });
 
+  afterEach(() => {
+    cy.screenshot()
+  })
+
   it('Deve buscar o filme e limpar a busca', () => {
     cy.get('#search-input').type('Matrix')
     cy.get('#search-button').click()
@@ -27,7 +31,7 @@ describe('US-001-Funcionalidade: Busca de filmes', () => {
   })
   })
 
-  it.only('Deve buscar filmes com sucesso da lista inteira', () => {
+  it('Deve buscar filmes com sucesso da lista inteira', () => {
   cy.fixture('filmes').each((filmes) => {
     cy.get('#search-input').clear().type(filmes.titulo)
     cy.get('#search-button').click({force: true})
